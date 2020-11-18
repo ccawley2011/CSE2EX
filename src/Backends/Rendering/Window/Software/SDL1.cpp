@@ -10,7 +10,7 @@
 
 #include "../../../Misc.h"
 
-static int bits_per_pixel = 24;
+static int bits_per_pixel = 32;
 static Uint32 window_flags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT;
 
 static SDL_Surface *window_sdlsurface;
@@ -26,16 +26,10 @@ bool WindowBackend_Software_CreateWindow(const char *window_title, size_t screen
 		window_flags &= ~SDL_FULLSCREEN;
 
 	window_sdlsurface = SDL_SetVideoMode(screen_width, screen_height, bits_per_pixel, window_flags);
-	if (window_sdlsurface == NULL) {
-		Backend_PrintError("Couldn't create 24bpp window: %s", SDL_GetError());
-		bits_per_pixel = 32;
-		window_sdlsurface = SDL_SetVideoMode(screen_width, screen_height, bits_per_pixel, window_flags);
-	}
-
 	if (window_sdlsurface != NULL)
 	{
 		SDL_WM_SetCaption(window_title, NULL);
-		framebuffer_sdlsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, window_sdlsurface->w, window_sdlsurface->h, 24, 0x0000FF, 0x00FF00, 0xFF0000, 0);
+		framebuffer_sdlsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, window_sdlsurface->w, window_sdlsurface->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 
 		if (framebuffer_sdlsurface != NULL)
 		{
