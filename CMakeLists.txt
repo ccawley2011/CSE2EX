@@ -702,3 +702,7 @@ foreach(FILENAME IN LISTS RESOURCES)
 		)
 	target_sources(CSE2 PRIVATE "${OUT_DIR}/${FILENAME}.h")
 endforeach()
+
+if(RISCOS)
+	include(RISCOSApp)
+endif(RISCOS)
