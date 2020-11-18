@@ -14,6 +14,7 @@
 
 #include "../Rendering.h"
 #include "../../Attributes.h"
+#include "../../CommonDefines.h"
 
 #define DO_KEY(SDL_KEY, BACKEND_KEY) \
 	case SDL_KEY: \
@@ -21,6 +22,8 @@
 		break;
 
 static bool keyboard_state[BACKEND_KEYBOARD_TOTAL];
+
+static unsigned int display_width = WINDOW_WIDTH, display_height = WINDOW_HEIGHT;
 
 static void (*window_focus_callback)(bool focus);
 
@@ -30,6 +33,13 @@ bool Backend_Init(void (*drag_and_drop_callback_param)(const char *path), void (
 
 	if (SDL_Init(SDL_INIT_VIDEO) == 0)
 	{
+		const SDL_VideoInfo *info = SDL_GetVideoInfo();
+		if (info) {
+			display_width = info->current_w;
+			display_height = info->current_h;
+			Backend_PrintInfo("Display Resolution: %dx%d", display_width, display_height);			
+		}
+
 		char driver[20];
 		if (SDL_VideoDriverName(driver, 20) != NULL)
 		{
@@ -261,8 +271,7 @@ void Backend_Delay(unsigned int ticks)
 
 void Backend_GetDisplayMode(Backend_DisplayMode *display_mode)
 {
-	// Dummy - SDL1 doesn't seem to give us a way to do this and I hate it
-	display_mode->width = 1280;
-	display_mode->height = 720;
+	display_mode->width = display_width;
+	display_mode->height = display_height;
 	display_mode->refresh_rate = 0;	// Dummy - tricks the game into thinking it should never use vsync, which is correct
 }
